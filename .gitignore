@@ -1,55 +1,21 @@
 ```
-# Android build artifacts
-*.apk
-*.aar
-*.aab
-*.dex
-
-# Android build outputs
+# Compiled and build artifacts
+*.class
+*.o
+*.obj
+*.out
 build/
-.externalNativeBuild/
-.cxx/
-
-# Android Studio files
-.idea/
-*.iml
-*.iws
-
-# Gradle
+# Dependencies
 .gradle/
-!gradle.properties
-!gradlew
-!gradlew.bat
-
-# Local configuration file (sdk path, etc)
-local.properties
-
-# Log Files
+# Logs and temp files
 *.log
-
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# Temporary files
 *.tmp
-*.temp
-
-# Environment files
+*.swp
+# Environment
 .env
 .env.local
-*.env.*
-
-# Coverage reports
-coverage/
-*.gcov
-*.lcov
-
-# Debug symbols
-*.map
-
-# Proguard generated files
-mapping.txt
-seeds.txt
-usage.txt
+.env.*
+# Editors
+.vscode/
+.idea/
 ```

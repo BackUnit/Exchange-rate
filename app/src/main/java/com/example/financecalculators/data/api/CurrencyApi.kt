@@ -2,6 +2,9 @@ package com.example.financecalculators.data.api
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
+import org.json.JSONObject
+import java.net.HttpURLConnection
 import java.net.URL
 
 class CurrencyApi {
@@ -26,26 +29,33 @@ class CurrencyApi {
 
     suspend fun getExchangeRates(): Map<String, Double> = withContext(Dispatchers.IO) {
         try {
-            val url = URL("https://api.exchangerate-api.com/v4/latest/USD")
-            val response = url.readText()
+            // Добавляем таймаут 5 секунд для HTTP запроса
+            val response = withTimeoutOrNull(5000L) {
+                val url = URL("https://api.exchangerate-api.com/v4/latest/USD")
+                val connection = url.openConnection() as HttpURLConnection
+                try {
+                    connection.connectTimeout = 5000
+                    connection.readTimeout = 5000
+                    connection.requestMethod = "GET"
+                    connection.inputStream.bufferedReader().use { it.readText() }
+                } finally {
+                    connection.disconnect()
+                }
+            }
             
-            val ratesStart = response.indexOf("\"rates\"") + 9
-            val ratesEnd = response.indexOf("}", ratesStart)
-            val ratesJson = response.substring(ratesStart, ratesEnd)
+            if (response == null) {
+                return@withContext fallbackRates
+            }
+            
+            // Безопасный парсинг JSON через JSONObject
+            val jsonResponse = JSONObject(response)
+            val ratesObject = jsonResponse.optJSONObject("rates") ?: return@withContext fallbackRates
             
             val rates = mutableMapOf<String, Double>()
             rates["USD"] = 1.0
             
-            val pairs = ratesJson.split(",")
-            for (pair in pairs) {
-                val parts = pair.split(":")
-                if (parts.size == 2) {
-                    val code = parts[0].trim().removeSurrounding("\"")
-                    val value = parts[1].trim().toDoubleOrNull()
-                    if (value != null) {
-                        rates[code] = value
-                    }
-                }
+            ratesObject.keys().forEach { key ->
+                rates[key] = ratesObject.optDouble(key, 1.0)
             }
             
             if (rates.isEmpty()) fallbackRates else rates

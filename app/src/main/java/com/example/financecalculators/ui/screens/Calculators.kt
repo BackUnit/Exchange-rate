@@ -13,28 +13,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.financecalculators.R
 import com.example.financecalculators.data.api.CurrencyApi
 import com.example.financecalculators.ui.theme.*
+import com.example.financecalculators.viewmodel.CompoundInterestViewModel
+import com.example.financecalculators.viewmodel.CurrencyViewModel
+import com.example.financecalculators.viewmodel.LoanViewModel
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
 @Composable
-fun CompoundInterestCalculator() {
-    var principal by remember { mutableStateOf("100000") }
-    var rate by remember { mutableStateOf("10") }
-    var years by remember { mutableStateOf("5") }
-    var compoundFrequency by remember { mutableStateOf(12) }
+fun CompoundInterestCalculator(viewModel: CompoundInterestViewModel = viewModel()) {
+    val principal by viewModel.principal.collectAsState()
+    val rate by viewModel.rate.collectAsState()
+    val years by viewModel.years.collectAsState()
+    val frequency by viewModel.frequency.collectAsState()
+    val error by viewModel.error.collectAsState()
     
-    val result = calculateCompoundInterest(
-        principal.toDoubleOrNull() ?: 0.0,
-        rate.toDoubleOrNull() ?: 0.0,
-        years.toIntOrNull() ?: 0,
-        compoundFrequency
-    )
+    val result = viewModel.calculateResult()
+    val interest = viewModel.getInterest()
     
     Column(
         modifier = Modifier
@@ -43,25 +47,39 @@ fun CompoundInterestCalculator() {
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        if (error != null) {
+            Snackbar(
+                containerColor = Color.Red,
+                contentColor = Color.White,
+                action = {
+                    TextButton(onClick = { viewModel.clearError() }) {
+                        Text("OK", color = Color.White)
+                    }
+                }
+            ) {
+                Text(error!!)
+            }
+        }
+        
         CalculatorInput(
-            label = "Начальная сумма",
+            label = stringResource(R.string.ci_label_principal),
             value = principal,
-            onValueChange = { principal = it },
-            suffix = "₽"
+            onValueChange = { viewModel.updatePrincipal(it) },
+            suffix = stringResource(R.string.ci_suffix_rubles)
         )
         
         CalculatorInput(
-            label = "Процентная ставка (годовых)",
+            label = stringResource(R.string.ci_label_rate),
             value = rate,
-            onValueChange = { rate = it },
-            suffix = "%"
+            onValueChange = { viewModel.updateRate(it) },
+            suffix = stringResource(R.string.ci_suffix_percent)
         )
         
         CalculatorInput(
-            label = "Срок инвестирования",
+            label = stringResource(R.string.ci_label_years),
             value = years,
-            onValueChange = { years = it },
-            suffix = "лет"
+            onValueChange = { viewModel.updateYears(it) },
+            suffix = stringResource(R.string.ci_suffix_years)
         )
         
         Card(
@@ -73,21 +91,21 @@ fun CompoundInterestCalculator() {
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text("Частота начисления процентов", color = OnDarkSurface.copy(alpha = 0.7f))
+                Text(stringResource(R.string.ci_label_frequency), color = OnDarkSurface.copy(alpha = 0.7f))
                 
                 listOf(
-                    1 to "Ежегодно",
-                    4 to "Ежеквартально",
-                    12 to "Ежемесячно",
-                    365 to "Ежедневно"
+                    1 to stringResource(R.string.ci_freq_annually),
+                    4 to stringResource(R.string.ci_freq_quarterly),
+                    12 to stringResource(R.string.ci_freq_monthly),
+                    365 to stringResource(R.string.ci_freq_daily)
                 ).forEach { (freq, label) ->
                     FilterChip(
-                        selected = compoundFrequency == freq,
-                        onClick = { compoundFrequency = freq },
+                        selected = frequency == freq,
+                        onClick = { viewModel.updateFrequency(freq) },
                         label = { Text(label, fontSize = 12.sp) },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = Primary,
-                            labelColor = if (compoundFrequency == freq) Color.White else OnDarkSurface
+                            labelColor = if (frequency == freq) Color.White else OnDarkSurface
                         )
                     )
                 }
@@ -95,9 +113,9 @@ fun CompoundInterestCalculator() {
         }
         
         ResultCard(
-            title = "Итоговая сумма",
-            value = formatCurrency(result.finalAmount),
-            subtitle = "Доход: ${formatCurrency(result.interest)}",
+            title = stringResource(R.string.ci_result_title),
+            value = formatCurrency(result),
+            subtitle = stringResource(R.string.ci_result_subtitle, formatCurrency(interest)),
             gradientColors = listOf(AccentGreen, AccentBlue)
         )
     }
@@ -121,16 +139,13 @@ fun calculateCompoundInterest(
 }
 
 @Composable
-fun LoanCalculator() {
-    var amount by remember { mutableStateOf("1000000") }
-    var rate by remember { mutableStateOf("12") }
-    var years by remember { mutableStateOf("5") }
+fun LoanCalculator(viewModel: LoanViewModel = viewModel()) {
+    val amount by viewModel.amount.collectAsState()
+    val rate by viewModel.rate.collectAsState()
+    val years by viewModel.years.collectAsState()
+    val error by viewModel.error.collectAsState()
     
-    val result = calculateLoan(
-        amount.toDoubleOrNull() ?: 0.0,
-        rate.toDoubleOrNull() ?: 0.0,
-        years.toIntOrNull() ?: 0
-    )
+    val result = viewModel.calculateResult()
     
     Column(
         modifier = Modifier
@@ -139,31 +154,49 @@ fun LoanCalculator() {
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        if (error != null) {
+            Snackbar(
+                containerColor = Color.Red,
+                contentColor = Color.White,
+                action = {
+                    TextButton(onClick = { viewModel.clearError() }) {
+                        Text("OK", color = Color.White)
+                    }
+                }
+            ) {
+                Text(error!!)
+            }
+        }
+        
         CalculatorInput(
-            label = "Сумма кредита",
+            label = stringResource(R.string.loan_label_amount),
             value = amount,
-            onValueChange = { amount = it },
-            suffix = "₽"
+            onValueChange = { viewModel.updateAmount(it) },
+            suffix = stringResource(R.string.ci_suffix_rubles)
         )
         
         CalculatorInput(
-            label = "Процентная ставка (годовых)",
+            label = stringResource(R.string.loan_label_rate),
             value = rate,
-            onValueChange = { rate = it },
-            suffix = "%"
+            onValueChange = { viewModel.updateRate(it) },
+            suffix = stringResource(R.string.ci_suffix_percent)
         )
         
         CalculatorInput(
-            label = "Срок кредита",
+            label = stringResource(R.string.loan_label_years),
             value = years,
-            onValueChange = { years = it },
-            suffix = "лет"
+            onValueChange = { viewModel.updateYears(it) },
+            suffix = stringResource(R.string.ci_suffix_years)
         )
         
         ResultCard(
-            title = "Ежемесячный платеж",
+            title = stringResource(R.string.loan_result_title),
             value = formatCurrency(result.monthlyPayment),
-            subtitle = "Общая выплата: ${formatCurrency(result.totalPayment)}\nПереплата: ${formatCurrency(result.overpayment)}",
+            subtitle = stringResource(
+                R.string.loan_result_subtitle,
+                formatCurrency(result.totalPayment),
+                formatCurrency(result.overpayment)
+            ),
             gradientColors = listOf(AccentOrange, AccentPurple)
         )
     }
@@ -196,32 +229,15 @@ fun calculateLoan(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CurrencyConverter() {
-    val currencyApi = remember { CurrencyApi() }
-    var exchangeRates by remember { mutableStateOf<Map<String, Double>>(emptyMap()) }
-    var isLoading by remember { mutableStateOf(true) }
-    var amount by remember { mutableStateOf("1000") }
-    var fromCurrency by remember { mutableStateOf("USD") }
-    var toCurrency by remember { mutableStateOf("EUR") }
+fun CurrencyConverter(viewModel: CurrencyViewModel = viewModel()) {
+    val uiState by viewModel.uiState.collectAsState()
+    val amount by viewModel.amount.collectAsState()
+    val fromCurrency by viewModel.fromCurrency.collectAsState()
+    val toCurrency by viewModel.toCurrency.collectAsState()
+    val error by viewModel.error.collectAsState()
     
-    val scope = rememberCoroutineScope()
-    
-    LaunchedEffect(Unit) {
-        exchangeRates = currencyApi.getExchangeRates()
-        isLoading = false
-    }
-    
-    val currencies = remember(exchangeRates) {
-        exchangeRates.keys.toList().sorted()
-    }
-    
-    val convertedAmount = remember(amount, fromCurrency, toCurrency, exchangeRates) {
-        if (exchangeRates.isEmpty()) return@remember 0.0
-        val usdAmount = amount.toDoubleOrNull() ?: 0.0
-        val fromRate = exchangeRates[fromCurrency] ?: 1.0
-        val toRate = exchangeRates[toCurrency] ?: 1.0
-        (usdAmount / fromRate) * toRate
-    }
+    val currencies = viewModel.getCurrenciesList()
+    val convertedAmount = viewModel.convertAmount()
     
     Column(
         modifier = Modifier
@@ -230,6 +246,20 @@ fun CurrencyConverter() {
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        if (error != null) {
+            Snackbar(
+                containerColor = Color.Red,
+                contentColor = Color.White,
+                action = {
+                    TextButton(onClick = { viewModel.clearError() }) {
+                        Text("OK", color = Color.White)
+                    }
+                }
+            ) {
+                Text(error!!)
+            }
+        }
+        
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = DarkSurfaceVariant),
@@ -243,31 +273,27 @@ fun CurrencyConverter() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Курсы валют обновлены",
+                    text = stringResource(R.string.cc_rates_updated),
                     color = OnDarkSurface.copy(alpha = 0.7f)
                 )
                 IconButton(
                     onClick = {
-                        scope.launch {
-                            isLoading = true
-                            exchangeRates = currencyApi.getExchangeRates()
-                            isLoading = false
-                        }
+                        viewModel.loadRates()
                     }
                 ) {
                     Icon(
                         imageVector = Icons.Default.Refresh,
-                        contentDescription = "Обновить",
-                        tint = if (isLoading) Color.Gray else Primary
+                        contentDescription = stringResource(R.string.cc_refresh),
+                        tint = if (uiState is com.example.financecalculators.viewmodel.CurrencyUiState.Loading) Color.Gray else Primary
                     )
                 }
             }
         }
         
         CalculatorInput(
-            label = "Сумма",
+            label = stringResource(R.string.cc_label_amount),
             value = amount,
-            onValueChange = { amount = it },
+            onValueChange = { viewModel.updateAmount(it) },
             suffix = ""
         )
         
@@ -290,7 +316,7 @@ fun CurrencyConverter() {
                             readOnly = true,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .menuAnchor(),
+                                .menuAnchor(type = ExposedDropdownMenuBoxType.Primary),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = Primary,
                                 unfocusedBorderColor = DarkSurfaceVariant
@@ -304,7 +330,7 @@ fun CurrencyConverter() {
                                 DropdownMenuItem(
                                     text = { Text(currency) },
                                     onClick = {
-                                        fromCurrency = currency
+                                        viewModel.updateFromCurrency(currency)
                                         expandedFrom = false
                                     }
                                 )
@@ -324,7 +350,7 @@ fun CurrencyConverter() {
                             readOnly = true,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .menuAnchor(),
+                                .menuAnchor(type = ExposedDropdownMenuBoxType.Secondary),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = Primary,
                                 unfocusedBorderColor = DarkSurfaceVariant
@@ -338,7 +364,7 @@ fun CurrencyConverter() {
                                 DropdownMenuItem(
                                     text = { Text(currency) },
                                     onClick = {
-                                        toCurrency = currency
+                                        viewModel.updateToCurrency(currency)
                                         expandedTo = false
                                     }
                                 )
@@ -350,9 +376,15 @@ fun CurrencyConverter() {
         }
         
         ResultCard(
-            title = "Результат конвертации",
+            title = stringResource(R.string.cc_result_title),
             value = "${String.format(Locale.US, "%.2f", convertedAmount)} $toCurrency",
-            subtitle = "$amount $fromCurrency = ${String.format(Locale.US, "%.2f", convertedAmount)} $toCurrency",
+            subtitle = stringResource(
+                R.string.cc_result_subtitle,
+                amount,
+                fromCurrency,
+                String.format(Locale.US, "%.2f", convertedAmount),
+                toCurrency
+            ),
             gradientColors = listOf(AccentPurple, AccentBlue)
         )
     }
