@@ -23,9 +23,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.financecalculators.R
 import com.example.financecalculators.data.api.CurrencyApi
 import com.example.financecalculators.data.model.CurrencyRate
 import com.example.financecalculators.ui.theme.*
@@ -44,13 +47,13 @@ fun HomeScreen() {
                     title = { 
                         Text(
                             when(currentScreen) {
-                                Screen.Home -> "Финансовые Калькуляторы"
-                                Screen.CompoundInterest -> "Сложный процент"
-                                Screen.Loan -> "Кредитный калькулятор"
-                                Screen.Currency -> "Конвертер валют"
-                                Screen.Settings -> "Настройки"
-                                Screen.Support -> "Поддержка"
-                                Screen.About -> "О приложении"
+                                Screen.Home -> stringResource(R.string.screen_home)
+                                Screen.CompoundInterest -> stringResource(R.string.screen_compound_interest)
+                                Screen.Loan -> stringResource(R.string.screen_loan)
+                                Screen.Currency -> stringResource(R.string.screen_currency)
+                                Screen.Settings -> stringResource(R.string.screen_settings)
+                                Screen.Support -> stringResource(R.string.screen_support)
+                                Screen.About -> stringResource(R.string.screen_about)
                             },
                             color = OnDarkSurface,
                             fontWeight = FontWeight.Bold
@@ -63,13 +66,13 @@ fun HomeScreen() {
                     navigationIcon = {
                         if (currentScreen != Screen.Home) {
                             IconButton(onClick = { currentScreen = Screen.Home }) {
-                                Icon(Icons.Default.ArrowBack, contentDescription = "Назад", tint = OnDarkSurface)
+                                Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.common_back), tint = OnDarkSurface)
                             }
                         }
                     },
                     actions = {
                         IconButton(onClick = { showMenu = true }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Меню", tint = OnDarkSurface)
+                            Icon(Icons.Default.Menu, contentDescription = stringResource(R.string.common_menu), tint = OnDarkSurface)
                         }
                     }
                 )
@@ -146,22 +149,22 @@ fun DrawerMenu(
                         Spacer(modifier = Modifier.height(60.dp))
                         
                         Text(
-                            text = "Меню",
+                            text = stringResource(R.string.menu_title),
                             style = MaterialTheme.typography.titleLarge,
                             color = Primary,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
                         
-                        MenuItem("📊 Сложный процент", onClick = { onNavigate(Screen.CompoundInterest) })
-                        MenuItem("💳 Кредитный калькулятор", onClick = { onNavigate(Screen.Loan) })
-                        MenuItem("💱 Конвертер валют", onClick = { onNavigate(Screen.Currency) })
+                        MenuItem(stringResource(R.string.menu_compound_interest), onClick = { onNavigate(Screen.CompoundInterest) })
+                        MenuItem(stringResource(R.string.menu_loan), onClick = { onNavigate(Screen.Loan) })
+                        MenuItem(stringResource(R.string.menu_currency), onClick = { onNavigate(Screen.Currency) })
                         
                         Divider(color = DarkSurfaceVariant, thickness = 1.dp)
                         
-                        MenuItem("⚙️ Настройки", onClick = { onNavigate(Screen.Settings) })
-                        MenuItem("❓ Поддержка", onClick = { onNavigate(Screen.Support) })
-                        MenuItem("ℹ️ О приложении", onClick = { onNavigate(Screen.About) })
+                        MenuItem(stringResource(R.string.menu_settings), onClick = { onNavigate(Screen.Settings) })
+                        MenuItem(stringResource(R.string.menu_support), onClick = { onNavigate(Screen.Support) })
+                        MenuItem(stringResource(R.string.menu_about), onClick = { onNavigate(Screen.About) })
                     }
                 }
             }
@@ -197,8 +200,8 @@ fun HomeContent(onNavigate: (Screen) -> Unit) {
     ) {
         item {
             CalculatorCard(
-                title = "Сложный процент",
-                description = "Рассчитайте доходность ваших инвестиций с учетом сложного процента",
+                title = stringResource(R.string.card_compound_interest_title),
+                description = stringResource(R.string.card_compound_interest_desc),
                 icon = Icons.Default.TrendingUp,
                 gradientColors = listOf(AccentGreen, AccentBlue),
                 onClick = { onNavigate(Screen.CompoundInterest) }
@@ -207,8 +210,8 @@ fun HomeContent(onNavigate: (Screen) -> Unit) {
         
         item {
             CalculatorCard(
-                title = "Кредитный калькулятор",
-                description = "Рассчитайте ежемесячный платеж и общую сумму кредита",
+                title = stringResource(R.string.card_loan_title),
+                description = stringResource(R.string.card_loan_desc),
                 icon = Icons.Default.CreditCard,
                 gradientColors = listOf(AccentOrange, AccentPurple),
                 onClick = { onNavigate(Screen.Loan) }
@@ -217,8 +220,8 @@ fun HomeContent(onNavigate: (Screen) -> Unit) {
         
         item {
             CalculatorCard(
-                title = "Конвертер валют",
-                description = "Конвертируйте валюты по актуальному курсу",
+                title = stringResource(R.string.card_currency_title),
+                description = stringResource(R.string.card_currency_desc),
                 icon = Icons.Default.Refresh,
                 gradientColors = listOf(AccentPurple, AccentBlue),
                 onClick = { onNavigate(Screen.Currency) }
@@ -239,8 +242,6 @@ fun CalculatorCard(
     gradientColors: List<Color>,
     onClick: () -> Unit
 ) {
-    var isPressed by remember { mutableStateOf(false) }
-    
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -258,7 +259,6 @@ fun CalculatorCard(
                         end = androidx.compose.ui.geometry.Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
                     )
                 )
-                .clickable { onClick() }
         ) {
             Row(
                 modifier = Modifier
