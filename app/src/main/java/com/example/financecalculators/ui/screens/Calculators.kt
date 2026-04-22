@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompoundInterestCalculator(viewModel: CompoundInterestViewModel = viewModel()) {
     val principal by viewModel.principal.collectAsState()
@@ -138,6 +139,7 @@ fun calculateCompoundInterest(
     return CompoundInterestResult(finalAmount, finalAmount - principal)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoanCalculator(viewModel: LoanViewModel = viewModel()) {
     val amount by viewModel.amount.collectAsState()
