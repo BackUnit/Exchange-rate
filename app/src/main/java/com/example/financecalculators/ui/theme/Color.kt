@@ -27,6 +27,7 @@ val AccentGreen = Color(0xFF5B8C6F)       // Muted green for gains
 val AccentBlue = Color(0xFF6B7C93)        // Muted blue
 val AccentOrange = Color(0xFFB87D4B)      // Muted orange
 val AccentRed = Color(0xFF9B5C5C)         // Muted red for losses
+val AccentPurple = Color(0xFF7B6B9C)      // Muted purple for currency
 
 // Card gradients (subtle)
 val CardGradientStart = Color(0xFF2D3240)
