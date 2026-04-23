@@ -7,7 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.financecalculators.ui.screens.HomeScreen
+import androidx.navigation.compose.rememberNavController
+import com.example.financecalculators.navigation.AppNavGraph
 import com.example.financecalculators.ui.theme.FinanceCalculatorsTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,7 +20,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreen()
+                    val navController = rememberNavController()
+                    AppNavGraph(navController = navController)
                 }
             }
         }
