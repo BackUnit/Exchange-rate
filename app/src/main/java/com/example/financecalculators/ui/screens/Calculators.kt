@@ -11,8 +11,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -117,7 +117,7 @@ fun CompoundInterestCalculator(viewModel: CompoundInterestViewModel = viewModel(
             title = stringResource(R.string.ci_result_title),
             value = formatCurrency(result),
             subtitle = stringResource(R.string.ci_result_subtitle, formatCurrency(interest)),
-            gradientColors = listOf(AccentGreen, AccentBlue)
+            backgroundColor = AccentGreen
         )
     }
 }
@@ -199,7 +199,7 @@ fun LoanCalculator(viewModel: LoanViewModel = viewModel()) {
                 formatCurrency(result.totalPayment),
                 formatCurrency(result.overpayment)
             ),
-            gradientColors = listOf(AccentOrange, AccentPurple)
+            backgroundColor = AccentOrange
         )
     }
 }
@@ -387,11 +387,12 @@ fun CurrencyConverter(viewModel: CurrencyViewModel = viewModel()) {
                 String.format(Locale.US, "%.2f", convertedAmount),
                 toCurrency
             ),
-            gradientColors = listOf(AccentPurple, AccentBlue)
+            backgroundColor = AccentPurple
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalculatorInput(
     label: String,
@@ -423,7 +424,7 @@ fun ResultCard(
     title: String,
     value: String,
     subtitle: String,
-    gradientColors: List<Color>
+    backgroundColor: Color
 ) {
     Card(
         modifier = Modifier
@@ -435,13 +436,7 @@ fun ResultCard(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    Brush.linearGradient(
-                        colors = gradientColors,
-                        start = androidx.compose.ui.geometry.Offset(0f, 0f),
-                        end = androidx.compose.ui.geometry.Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
-                    )
-                )
+                .background(SolidColor(backgroundColor))
                 .padding(20.dp)
         ) {
             Column(
@@ -454,7 +449,7 @@ fun ResultCard(
                     color = Color.White.copy(alpha = 0.9f),
                     fontWeight = FontWeight.Medium
                 )
-                
+
                 Column {
                     Text(
                         text = value,
@@ -476,8 +471,8 @@ fun ResultCard(
 }
 
 fun formatCurrency(amount: Double): String {
-    return NumberFormat.getNumberInstance(Locale("ru", "RU")).apply {
-        maximumFractionDigits = 2
-        minimumFractionDigits = 2
-    }.format(amount) + " ₽"
+    val formatter = NumberFormat.getCurrencyInstance(Locale("ru", "RU"))
+    formatter.maximumFractionDigits = 2
+    formatter.minimumFractionDigits = 2
+    return formatter.format(amount)
 }

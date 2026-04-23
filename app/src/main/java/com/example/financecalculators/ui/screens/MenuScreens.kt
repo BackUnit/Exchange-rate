@@ -10,8 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -110,7 +110,7 @@ fun SupportScreen() {
                 "Как часто обновляются курсы валют?",
                 "Безопасны ли мои данные?"
             ),
-            gradientColors = listOf(AccentBlue, AccentPurple)
+            gradientColor = AccentBlue
         )
         
         InfoCard(
@@ -120,7 +120,7 @@ fun SupportScreen() {
                 "📱 +7 (999) 123-45-67",
                 "💬 Онлайн чат доступен с 9:00 до 21:00"
             ),
-            gradientColors = listOf(AccentGreen, AccentBlue)
+            gradientColor = AccentGreen
         )
         
         Card(
@@ -182,7 +182,7 @@ fun AboutScreen() {
             modifier = Modifier
                 .size(100.dp)
                 .clip(RoundedCornerShape(24.dp))
-                .background(Brush.linearGradient(listOf(AccentPurple, AccentBlue))),
+                .background(SolidColor(AccentPurple)),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -286,7 +286,7 @@ fun AboutItem(label: String, value: String) {
 fun InfoCard(
     title: String,
     items: List<String>,
-    gradientColors: List<Color>
+    gradientColor: Color
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -296,13 +296,7 @@ fun InfoCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(
-                    Brush.linearGradient(
-                        colors = gradientColors,
-                        start = androidx.compose.ui.geometry.Offset(0f, 0f),
-                        end = androidx.compose.ui.geometry.Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
-                    )
-                )
+                .background(SolidColor(gradientColor))
                 .padding(20.dp)
         ) {
             Column(
