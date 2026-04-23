@@ -22,8 +22,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -205,7 +205,7 @@ fun HomeContent(onNavigate: (Screen) -> Unit) {
                 title = stringResource(R.string.card_compound_interest_title),
                 description = stringResource(R.string.card_compound_interest_desc),
                 icon = Icons.Default.TrendingUp,
-                gradientColors = listOf(AccentGreen, AccentBlue),
+                gradientColor = AccentGreen,
                 onClick = { onNavigate(Screen.CompoundInterest) }
             )
         }
@@ -215,7 +215,7 @@ fun HomeContent(onNavigate: (Screen) -> Unit) {
                 title = stringResource(R.string.card_loan_title),
                 description = stringResource(R.string.card_loan_desc),
                 icon = Icons.Default.CreditCard,
-                gradientColors = listOf(AccentOrange, AccentPurple),
+                gradientColor = AccentOrange,
                 onClick = { onNavigate(Screen.Loan) }
             )
         }
@@ -225,7 +225,7 @@ fun HomeContent(onNavigate: (Screen) -> Unit) {
                 title = stringResource(R.string.card_currency_title),
                 description = stringResource(R.string.card_currency_desc),
                 icon = Icons.Default.Refresh,
-                gradientColors = listOf(AccentPurple, AccentBlue),
+                gradientColor = AccentPurple,
                 onClick = { onNavigate(Screen.Currency) }
             )
         }
@@ -241,7 +241,7 @@ fun CalculatorCard(
     title: String,
     description: String,
     icon: ImageVector,
-    gradientColors: List<Color>,
+    gradientColor: Color,
     onClick: () -> Unit
 ) {
     Surface(
@@ -254,13 +254,7 @@ fun CalculatorCard(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    Brush.linearGradient(
-                        colors = gradientColors,
-                        start = androidx.compose.ui.geometry.Offset(0f, 0f),
-                        end = androidx.compose.ui.geometry.Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
-                    )
-                )
+                .background(SolidColor(gradientColor))
         ) {
             Row(
                 modifier = Modifier
