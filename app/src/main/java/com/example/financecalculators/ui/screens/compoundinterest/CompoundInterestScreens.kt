@@ -15,6 +15,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -28,6 +30,13 @@ import com.example.financecalculators.viewmodel.CalculationViewModel
 import com.example.financecalculators.viewmodel.calculateCompoundInterest
 import java.text.NumberFormat
 import java.util.Locale
+
+// Additional imports for Material3 components used in this file
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.ui.platform.LocalTextStyle
+import androidx.compose.foundation.layout.FlowRow
 
 /**
  * Animated number counter for real-time result header

@@ -29,6 +29,14 @@ import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
+// Additional imports for Material3 components used in this file
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuBoxType
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.menuAnchor
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompoundInterestCalculator(viewModel: CompoundInterestViewModel = viewModel()) {
