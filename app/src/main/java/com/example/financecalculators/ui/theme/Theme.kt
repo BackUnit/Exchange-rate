@@ -17,11 +17,12 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = SecondaryVariant,
     background = DarkBackground,
     surface = DarkSurface,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
+    surfaceVariant = DarkSurfaceVariant,
+    onPrimary = OnPrimary,
+    onSecondary = Color.White,
     onBackground = OnDarkBackground,
     onSurface = OnDarkSurface,
-    error = Error
+    error = AccentRed
 )
 
 @Composable
