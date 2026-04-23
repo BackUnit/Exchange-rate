@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Финансовые Калькуляторы</string>
+    
+    <!-- Screen Titles -->
+    <string name="screen_home">Финансовые Калькуляторы</string>
+    <string name="screen_compound_interest">Сложный процент</string>
+    <string name="screen_loan">Кредитный калькулятор</string>
+    <string name="screen_currency">Конвертер валют</string>
+    <string name="screen_settings">Настройки</string>
+    <string name="screen_support">Поддержка</string>
+    <string name="screen_about">О приложении</string>
+    
+    <!-- Menu -->
+    <string name="menu_title">Меню</string>
+    <string name="menu_compound_interest">📊 Сложный процент</string>
+    <string name="menu_loan">💳 Кредитный калькулятор</string>
+    <string name="menu_currency">💱 Конвертер валют</string>
+    <string name="menu_settings">⚙️ Настройки</string>
+    <string name="menu_support">❓ Поддержка</string>
+    <string name="menu_about">ℹ️ О приложении</string>
+    
+    <!-- Home Screen Cards -->
+    <string name="card_compound_interest_title">Сложный процент</string>
+    <string name="card_compound_interest_desc">Рассчитайте доходность ваших инвестиций с учетом сложного процента</string>
+    <string name="card_loan_title">Кредитный калькулятор</string>
+    <string name="card_loan_desc">Рассчитайте ежемесячный платеж и общую сумму кредита</string>
+    <string name="card_currency_title">Конвертер валют</string>
+    <string name="card_currency_desc">Конвертируйте валюты по актуальному курсу</string>
+    
+    <!-- Compound Interest Calculator -->
+    <string name="ci_label_principal">Начальная сумма</string>
+    <string name="ci_label_rate">Процентная ставка (годовых)</string>
+    <string name="ci_label_years">Срок инвестирования</string>
+    <string name="ci_suffix_rubles">₽</string>
+    <string name="ci_suffix_percent">%</string>
+    <string name="ci_suffix_years">лет</string>
+    <string name="ci_label_frequency">Частота начисления процентов</string>
+    <string name="ci_freq_annually">Ежегодно</string>
+    <string name="ci_freq_quarterly">Ежеквартально</string>
+    <string name="ci_freq_monthly">Ежемесячно</string>
+    <string name="ci_freq_daily">Ежедневно</string>
+    <string name="ci_result_title">Итоговая сумма</string>
+    <string name="ci_result_subtitle">Доход: %s</string>
+    <string name="ci_error_invalid_input">Неверный ввод</string>
+    <string name="ci_error_negative_value">Значение не может быть отрицательным</string>
+    
+    <!-- Loan Calculator -->
+    <string name="loan_label_amount">Сумма кредита</string>
+    <string name="loan_label_rate">Процентная ставка (годовых)</string>
+    <string name="loan_label_years">Срок кредита</string>
+    <string name="loan_result_title">Ежемесячный платеж</string>
+    <string name="loan_result_subtitle">Общая выплата: %1$s\nПереплата: %2$s</string>
+    <string name="loan_error_negative_value">Сумма, ставка и срок не могут быть отрицательными</string>
+    
+    <!-- Currency Converter -->
+    <string name="cc_label_amount">Сумма</string>
+    <string name="cc_rates_updated">Курсы валют обновлены</string>
+    <string name="cc_refresh">Обновить</string>
+    <string name="cc_result_title">Результат конвертации</string>
+    <string name="cc_result_subtitle">%1$s %2$s = %3$s %4$s</string>
+    <string name="cc_error_network">Ошибка загрузки курсов валют</string>
+    <string name="cc_error_invalid_amount">Неверная сумма</string>
+    
+    <!-- Common -->
+    <string name="common_back">Назад</string>
+    <string name="common_menu">Меню</string>
+    <string name="common_error">Ошибка</string>
+    <string name="common_loading">Загрузка…</string>
+    <string name="common_retry">Повторить</string>
+</resources>
